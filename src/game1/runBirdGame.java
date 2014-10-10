@@ -34,6 +34,7 @@ public class runBirdGame extends World {
     Pipe pipe;
     ArrayList<Bird> flock;
     
+    
     boolean gameOver;
     
     
@@ -134,11 +135,7 @@ public class runBirdGame extends World {
         return new RectangleImage(new Posn(screenWidth/2, screenHeight/2),
                             screenWidth, screenHeight, new Black());
     }
-    /*
-    private WorldImage wallImage(){
-        return new RectangleImage(new Posn(screenWidth - (pipe.pipeWidth/2), screenHeight/2),
-                            screenWidth, screenHeight, new Orange());
-    }*/
+    
     
     private WorldImage birdImage(ArrayList<Bird> flock, int counter){
         if (flock.isEmpty())
