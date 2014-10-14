@@ -19,10 +19,10 @@ import javalib.worldimages.*;
  */
 public class RunBirdGame extends World {
     
-    static final int screenWidth = 600;
-    static final int screenHeight = 150;
+    final int screenWidth = 600;
+    final int screenHeight = 150;
    
-    static final int winNumber = 10;
+    final int winNumber = 10;
     
     int level; 
     int frames;
@@ -160,11 +160,11 @@ public class RunBirdGame extends World {
                new OverlayImages(pipe.pipeImage() , scoreImage()));
     }
     
-    
+    /*
     public static void main( String[] args ) {
         RunBirdGame game = new RunBirdGame();
         
         game.bigBang(600, 150, 0.15);
-    }
+    }*/
     
 }
