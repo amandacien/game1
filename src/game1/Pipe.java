@@ -24,28 +24,32 @@ public class Pipe {
     final int pipeHeight = 50;
     final int pipeWidth = 30;
     
-    static int movePipeRate = 5;
+    static int movePipeRate = 7;
             
     int height;
     int width;
     
     static IColor col = new Green();
     
-    
+    //Constructor 
     Pipe(int width, int height){
+        //puts the pipe in the middle right of the screen
         this.position = new Posn(width - (pipeWidth/2), height/2) ;
         this.height = height;
         this.width = width;
     }
     
-    private Pipe(Posn position, int height, int width)
+    //Constructor 
+    Pipe(Posn position, int height, int width)
     {
-        //puts the pipe in the middle of the screen
         this.position = position;
         this.height = height;
         this.width = width;
     }
     
+    //Moves the pipe depending on whether the up or down key is pressed and 
+    //returns a new pipe accordingly
+    //If any other key is pressed, then it will return the current pipe
     public Pipe movePipe(String key)
     {
         if (key.equals("down"))
@@ -59,6 +63,9 @@ public class Pipe {
     }
     
     
+    //Looks at if the pipe's y is out of bound of the screen and if so,
+    //returns a new pipe that meets either the upper bound or lower bound of the 
+    //screen depending on where it was previously
     public Pipe pipeOutOfBounds()
     {
         if (this.position.y < pipeHeight/2)
@@ -71,17 +78,20 @@ public class Pipe {
             return this;
     }
     
-   
+    //Looks if the x coordinate of the bird and pipe meet
     private boolean touchHelperX(Bird bird){
-        return ((bird.position.x + bird.radius/2) >
+        return ((bird.position.x + bird.diameter/2) >
                 (this.position.x - this.pipeWidth/2));
     }
     
+    //Looks if the y coordinates of the bird and pipe match 
     private boolean touchHelperY(Bird bird){
-        return ((bird.position.y < this.position.y + this.pipeHeight/2 - bird.radius/2)&&
-                    (bird.position.y > this.position.y - this.pipeHeight/2 + bird.radius/2));
+        return ((bird.position.y < this.position.y + this.pipeHeight/2 - bird.diameter/2)&&
+                    (bird.position.y > this.position.y - this.pipeHeight/2 + bird.diameter/2));
     } 
     
+    //returns an integer which correlates to whether a bird hs touched the pipe,
+    //has failed to or has not yet reached the pipe
     public int touchedBird(Bird bird){
         if (touchHelperX(bird) && touchHelperY(bird)){
             return 1; //will return a 1 if the bird is in range of the correct x and y coordinates 
@@ -92,6 +102,7 @@ public class Pipe {
             return 0; //will return a 0 if the bird has not yet reached the pipe 
     }
     
+    //Creates the image for the pipe, a filled green rectangle 
     WorldImage pipeImage(){
         return new RectangleImage(this.position, 
                 this.pipeWidth, this.pipeHeight, this.col);

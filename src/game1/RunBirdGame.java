@@ -17,13 +17,11 @@ import javalib.worldimages.*;
  *
  * @author AmandaMa
  */
-public class runBirdGame extends World {
+public class RunBirdGame extends World {
     
     static final int screenWidth = 600;
     static final int screenHeight = 150;
    
-    //WorldCanvas canvas = new WorldCanvas(screenWidth, screenHeight);
-    
     static final int winNumber = 10;
     
     int level; 
@@ -38,11 +36,11 @@ public class runBirdGame extends World {
     boolean gameOver;
     
     
-    public runBirdGame(){
+    public RunBirdGame(){
         this(1);
     }
     
-    public runBirdGame(int level){
+    public RunBirdGame(int level){
         super();
         this.pipe = new Pipe (screenWidth, screenHeight);
         this.level = level; 
@@ -53,7 +51,7 @@ public class runBirdGame extends World {
         this.gameOver = false;
     }
     
-    private runBirdGame(Pipe pipe, ArrayList<Bird> flock, int level, int frames,
+    public RunBirdGame(Pipe pipe, ArrayList<Bird> flock, int level, int frames,
             int birdsIn, int birdsOut, boolean gameOver){
         super();
         this.pipe = pipe;
@@ -69,8 +67,8 @@ public class runBirdGame extends World {
     
     public World onKeyEvent (String ke) {
         if (ke.equals("up") || (ke.equals("down")))
-            return new runBirdGame(pipe.movePipe(ke).pipeOutOfBounds(), flock, level, frames,
-            birdsIn, birdsOut, gameOver);
+            return new RunBirdGame(pipe.movePipe(ke).pipeOutOfBounds(), 
+                    flock, level, frames, birdsIn, birdsOut, gameOver);
         else 
             return this;
         
@@ -80,7 +78,8 @@ public class runBirdGame extends World {
             if(gameOver){
                 return new WorldEnd(true, new OverlayImages(this.makeImage(),
                     new TextImage(new Posn(screenWidth/2,screenHeight/2), 
-                            ("Game Over: You've reached level " + this.level),
+                            ("Game Over: You only got the flock through " 
+                                    + (this.level - 1) + " stages"),
                             20, new White())));
             }
             else return new WorldEnd(false, this.makeImage());
@@ -114,21 +113,24 @@ public class runBirdGame extends World {
             }     
         }
         
-        //adds a bird every 20 frames 
+        //adds a bird every (30 - level * 3) - this is the formula for the 
+        //entrance of the birds as not to have too large of a time difference
+        //between the entrance of the birds at a later level
         if (this.frames % (30 - level * 3) == 1 ){
             if (newBirdsIn < winNumber){
                 newFlock.add(new Bird(screenWidth, screenHeight, level));
-               newBirdsIn += 1; 
+                newBirdsIn += 1; 
             }
         }
         
         
-        //if there have been 15 birds that have entered an left the screen 
-        //then it returns a new game with the level increased by 1
+        //if there have been 10 birds that have entered and left the screen 
+        //then it returns a new game with the level increased by 1, if not, it 
+        //continues the game
         if (newBirdsIn == winNumber && newBirdsOut == winNumber)
-            return new runBirdGame(level+1);
+            return new RunBirdGame(level+1);
         else
-            return new runBirdGame(pipe, newFlock, level, frames+1, newBirdsIn, newBirdsOut, gameOver);
+            return new RunBirdGame(pipe, newFlock, level, frames+1, newBirdsIn, newBirdsOut, gameOver);
     }
     
     private WorldImage background(){
@@ -160,7 +162,7 @@ public class runBirdGame extends World {
     
     
     public static void main( String[] args ) {
-        runBirdGame game = new runBirdGame();
+        RunBirdGame game = new RunBirdGame();
         
         game.bigBang(600, 150, 0.15);
     }
