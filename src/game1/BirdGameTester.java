@@ -72,47 +72,76 @@ public class BirdGameTester {
         int lowY = game.screenHeight - (game.pipe.pipeHeight/2);
         
         //the largest distance the pipe will ever move
-        int buffer = game.pipe.movePipeRate;
+        int moveDistance = game.pipe.movePipeRate;
         
         //the coordinates before the key is pressed
         int beforeX = game.pipe.position.x;
         int beforeY = game.pipe.position.y;
         
         //the event
-        game.onKeyEvent(key);
+        RunBirdGame newGame = game.onKeyEvent(key);
         
         //the coordinates after the key is pressed 
-        int afterX = game.pipe.position.x;
-        int afterY = game.pipe.position.y;
+        int afterX = newGame.pipe.position.x;
+        int afterY = newGame.pipe.position.y;
         
-        if(key.equals("up")) {
+        
+        if (key.equals("up")){
             if (afterX != beforeX) {
                 throw new Exception ("Your X is not supposed to change"); }
             
-            
-            if (beforeY < buffer){
+            if (beforeY < highY + moveDistance){
                 if (afterY != highY) {
+                    throw new Exception ("Your pipe went above the screen, "
+                            + "it should be at the highest position - up"); 
+                }
+            }
+            
+            if (beforeY - moveDistance > lowY){
+                if (afterY != lowY) {
                     System.out.println(beforeY);
                     System.out.println(afterY);
-                    System.out.println(buffer);
-                    throw new Exception ("Your pipe went above the screen, "
-                            + "it should be at the highest position"); }
-                else if (afterY != beforeY - buffer) {
+                    throw new Exception ("Your pipe was below the screen, "
+                            + "it should be at the lowest position - up"); 
+                }
+            }
+            
+            if ((beforeY >= highY + moveDistance) && (beforeY - moveDistance <= lowY)) {
+                if (afterY != (beforeY - moveDistance)) {
+                    System.out.println(beforeY);
+                    System.out.println(afterY);
                     throw new Exception ("Your pipe didn't actually move the "
-                    + "correct number of pixels up"); }
+                  + "correct number of pixels up - up"); }
             }
         }
         
-        if(key.equals("down")) {
+        
+        
+        if (key.equals("down")){
             if (afterX != beforeX) {
                 throw new Exception ("Your X is not supposed to change"); }
-            if (beforeY > game.screenHeight - buffer){
+            
+            if (beforeY > lowY - moveDistance){
                 if (afterY != lowY) {
                     throw new Exception ("Your pipe went below the screen, "
-                            + "it should be at the lowest position"); }
-                else if (afterY != beforeY + buffer)
+                            + "it should be at the lowest position - down"); 
+                }
+            }
+            
+            if (beforeY + moveDistance < highY){
+                if (afterY != highY) {
+                    throw new Exception ("Your pipe was above the screen, "
+                            + "it should be at the highest position - down"); 
+                }
+            }
+            
+            if ((beforeY <= highY - moveDistance) && (beforeY + moveDistance >= lowY)) {
+                if (afterY != (beforeY + moveDistance)) {
+                    System.out.println(beforeY);
+                    System.out.println(afterY);
                     throw new Exception ("Your pipe didn't actually move the "
-                    + "correct number of pixels down"); }
+                  + "correct number of pixels down - down"); }
+            }
         }
         
         testPipe++;
@@ -122,13 +151,24 @@ public class BirdGameTester {
     //entire bird will be on screen 
     public static void testBirdScreen() throws Exception {
         
-        RunBirdGame game = new RunBirdGame();
+        RunBirdGame preGame = new RunBirdGame();
         
-        game.flock.add(new Bird(game.screenWidth, game.screenHeight, game.level));
+        ArrayList<Bird> flock = preGame.flock;
         
+        flock.add(new Bird(preGame.screenWidth, preGame.screenHeight, preGame.level));
         
+        RunBirdGame game = new RunBirdGame(preGame.pipe, flock, preGame.level, preGame.frames,
+            preGame.birdsIn, preGame.birdsOut, preGame.gameOver);
         
+        int positionY = game.flock.get(0).position.y;
+        int buffer = game.flock.get(0).diameter/2;
         
+        if (!((positionY >= buffer) && 
+                (positionY <= game.screenHeight - buffer))){
+            throw new Exception ("Your bird isn't on screen");
+        }
+        
+        testBirdScreen++;
     }
     
     public static void main(String[] args) throws Exception {
@@ -136,18 +176,15 @@ public class BirdGameTester {
         
         for (int i = 0; i < 1000; i++){
             BirdGameTester.testStart();
-            //BirdGameTester.testPipe("up");
-            //BirdGameTester.testPipe("down");
+            BirdGameTester.testPipe("up");
+            BirdGameTester.testPipe("down");
+            BirdGameTester.testBirdScreen();
         }
         
         System.out.println("testStart ran sucessfully " + tests.testStart + (" times"));
-        //System.out.println("testPipe ran sucessfully " + tests.testPipe + (" times"));
+        System.out.println("testPipe ran sucessfully " + tests.testPipe + (" times"));
+        System.out.println("testBirdScreen ran sucessfully " + tests.testBirdScreen + (" times"));
         
-        
-        RunBirdGame game = new RunBirdGame();
-        game.onKeyEvent("up").onKeyEvent("up");
-        System.out.println(game.pipe.position.x + " " + game.pipe.position.y);
-        System.out.println(game.pipe.movePipeRate);
             
         
     }

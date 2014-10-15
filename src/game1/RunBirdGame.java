@@ -65,7 +65,7 @@ public class RunBirdGame extends World {
     }
             
     
-    public World onKeyEvent (String ke) {
+    public RunBirdGame onKeyEvent (String ke) {
         if (ke.equals("up") || (ke.equals("down")))
             return new RunBirdGame(pipe.movePipe(ke).pipeOutOfBounds(), 
                     flock, level, frames, birdsIn, birdsOut, gameOver);
@@ -88,7 +88,7 @@ public class RunBirdGame extends World {
     
   
     
-    public World onTick(){
+    public RunBirdGame onTick(){
         ArrayList<Bird> newFlock = new ArrayList();        
         int newBirdsIn = this.birdsIn;
         int newBirdsOut = this.birdsOut;
@@ -160,11 +160,11 @@ public class RunBirdGame extends World {
                new OverlayImages(pipe.pipeImage() , scoreImage()));
     }
     
-    /*
+    
     public static void main( String[] args ) {
         RunBirdGame game = new RunBirdGame();
         
         game.bigBang(600, 150, 0.15);
-    }*/
+    }
     
 }
