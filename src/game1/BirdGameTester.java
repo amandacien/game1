@@ -23,6 +23,7 @@ public class BirdGameTester {
     static int testStart = 0;
     static int testPipe = 0;
     static int testBirdScreen = 0;
+    static int testMoveDelete = 0;
     static Random rand = new Random();
     
     public static int randomGen(int start, int end){
@@ -32,7 +33,7 @@ public class BirdGameTester {
     //tests the beginning of each level (which is the same start as the first level)
     public static void testStart() throws Exception {
         
-        RunBirdGame game = new RunBirdGame(randomGen(1, 10));
+        RunBirdGame game = new RunBirdGame(randomGen(1, 100));
         
         //checks if the flock is empty - it should be 
         if (!game.flock.isEmpty()) {
@@ -44,8 +45,22 @@ public class BirdGameTester {
             throw new Exception("The game shouldn't be over at the start of a level");
         }
         
+        //checks BirdsIn
+        if (game.birdsIn != 0){
+            throw new Exception("BirdsIn should start at 0");
+        }
         
+        //checks BirdsOut 
+        if (game.birdsOut != 0){
+            throw new Exception("BirdsOut should start at 0");
+        }
         
+        //checks frames 
+        if (game.frames != 0){
+            throw new Exception("Frames should start at 0");
+        }
+        
+        //checks that the pipe is center right
         if (game.pipe.position.equals(new Posn(game.screenWidth - game.pipe.pipeWidth/2,
                                           game.screenHeight/2))) {
             throw new Exception("The pipe isn't starting in the center"); 
@@ -114,10 +129,7 @@ public class BirdGameTester {
                   + "correct number of pixels up - up"); }
             }
         }
-        
-        
-        
-        if (key.equals("down")){
+        else if (key.equals("down")){
             if (afterX != beforeX) {
                 throw new Exception ("Your X is not supposed to change"); }
             
@@ -143,6 +155,10 @@ public class BirdGameTester {
                   + "correct number of pixels down - down"); }
             }
         }
+        else {
+            if (beforeY != afterY || beforeX != afterX)
+                throw new Exception ("Something happened, but it shouldn't have");
+        }
         
         testPipe++;
     }
@@ -163,6 +179,7 @@ public class BirdGameTester {
         int positionY = game.flock.get(0).position.y;
         int buffer = game.flock.get(0).diameter/2;
         
+        //looks if the bird is within the y-range
         if (!((positionY >= buffer) && 
                 (positionY <= game.screenHeight - buffer))){
             throw new Exception ("Your bird isn't on screen");
@@ -171,6 +188,55 @@ public class BirdGameTester {
         testBirdScreen++;
     }
     
+    
+    
+    //tests whether the bird moves at the correct speed and whether it ends 
+    //the game if it misses the pipe 
+    public static void testMoveDelete() throws Exception {
+        
+        //creates a game to base the tested game from
+        RunBirdGame preGame = new RunBirdGame(randomGen(1, 250));
+        
+        //creates a new pipe that is off screen so that any bird crossing 
+        //the screen will result in a gameOver
+        Pipe pipe = new Pipe(new Posn(preGame.pipe.position.x, 
+                preGame.screenHeight + preGame.pipe.pipeHeight), 
+                preGame.screenHeight, preGame.screenWidth);
+        
+        //adds a bird to the flock
+        ArrayList<Bird> flock = preGame.flock;
+        flock.add(new Bird(preGame.screenWidth, preGame.screenHeight, preGame.level));
+        
+        //creates a new game to run the test with
+        RunBirdGame game = new RunBirdGame(pipe, flock, preGame.level, preGame.frames,
+            preGame.birdsIn, preGame.birdsOut, preGame.gameOver);
+        
+        //stores the x coordinate of the bird before
+        int beforeX = game.flock.get(0).position.x;
+        
+        //the action 
+        RunBirdGame afterTick = game.onTick();
+        
+        
+        if (beforeX > (game.screenWidth 
+                - game.pipe.pipeWidth 
+                - game.flock.get(0).rate
+                - game.flock.get(0).diameter/2)) {
+            if (!afterTick.gameOver){
+                throw new Exception ("The bird went past the pipe and didn't touch it" + 
+                        " , the game should be over");}
+        }
+        else {
+            if ((beforeX + afterTick.flock.get(0).rate) != (afterTick.flock.get(0).position.x)){
+                
+                throw new Exception ("The bird didn't move as much as it should have");
+            }
+        }
+        testMoveDelete++;
+    }
+           
+    
+    
     public static void main(String[] args) throws Exception {
         BirdGameTester tests = new BirdGameTester();
         
@@ -178,12 +244,15 @@ public class BirdGameTester {
             BirdGameTester.testStart();
             BirdGameTester.testPipe("up");
             BirdGameTester.testPipe("down");
+            BirdGameTester.testPipe(" ");
             BirdGameTester.testBirdScreen();
+            BirdGameTester.testMoveDelete();
         }
         
         System.out.println("testStart ran sucessfully " + tests.testStart + (" times"));
         System.out.println("testPipe ran sucessfully " + tests.testPipe + (" times"));
         System.out.println("testBirdScreen ran sucessfully " + tests.testBirdScreen + (" times"));
+        System.out.println("testMoveDelete ran sucessfully " + tests.testMoveDelete + (" times"));
         
             
         

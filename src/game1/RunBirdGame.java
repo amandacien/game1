@@ -115,11 +115,22 @@ public class RunBirdGame extends World {
         
         //adds a bird every (30 - level * 3) - this is the formula for the 
         //entrance of the birds as not to have too large of a time difference
-        //between the entrance of the birds at a later level
-        if (this.frames % (30 - level * 3) == 1 ){
-            if (newBirdsIn < winNumber){
-                newFlock.add(new Bird(screenWidth, screenHeight, level));
-                newBirdsIn += 1; 
+        //between the entrance of the birds at a later level, after level 9, 
+        //the speed of the birds will be the same as to avoid a divide by 0 error
+        if (level >= 10){
+            if (this.frames % (30 - 9 * 3) == 2 ){
+                if (newBirdsIn < winNumber){
+                    newFlock.add(new Bird(screenWidth, screenHeight, level));
+                    newBirdsIn += 1; 
+                }
+            }
+        }
+        else {
+            if (this.frames % (30 - level * 3) == 2 ){
+                if (newBirdsIn < winNumber){
+                    newFlock.add(new Bird(screenWidth, screenHeight, level));
+                    newBirdsIn += 1; 
+                }
             }
         }
         
