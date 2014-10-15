@@ -109,7 +109,7 @@ public class BirdGameTester {
                 throw new Exception ("Your X is not supposed to change"); }
             
             if (beforeY < highY + moveDistance){
-                if (afterY != highY) {
+                if (afterY != highY) { 
                     throw new Exception ("Your pipe went above the screen, "
                             + "it should be at the highest position - up"); 
                 }
@@ -230,6 +230,10 @@ public class BirdGameTester {
                         " , the game should be over");}
         }
         else {
+            if (game.flock.get(0).position.y != afterTick.flock.get(0).position.y){
+                throw new Exception ("The bird should not move up or down ");
+            }
+            
             if ((beforeX + afterTick.flock.get(0).rate) != (afterTick.flock.get(0).position.x)){
                 
                 throw new Exception ("The bird didn't move as much as it should have");
@@ -271,7 +275,7 @@ public class BirdGameTester {
 
           RunBirdGame afterTick = game.onTick().onTick().onTick();
 
-          if (game.birdsIn > 9){
+          if (game.birdsIn > game.winNumber - 1){
             if (afterTick.birdsIn != game.birdsIn){
                 throw new Exception ("Your birds shouldn't be adding again");
             }

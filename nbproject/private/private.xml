@@ -3,9 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/AmandaMa/NetBeansProjects/game1/src/game1/runBirdGame.java</file>
             <file>file:/Users/AmandaMa/NetBeansProjects/game1/src/game1/Pipe.java</file>
+            <file>file:/Users/AmandaMa/NetBeansProjects/game1/src/game1/BirdGameTester.java</file>
             <file>file:/Users/AmandaMa/NetBeansProjects/game1/src/game1/Bird.java</file>
+            <file>file:/Users/AmandaMa/NetBeansProjects/game1/src/game1/RunBirdGame.java</file>
         </group>
     </open-files>
 </project-private>

@@ -173,7 +173,7 @@ public class RunBirdGame extends World {
     
     
     public static void main( String[] args ) {
-        RunBirdGame game = new RunBirdGame();
+        RunBirdGame game = new RunBirdGame(8);
         
         game.bigBang(600, 150, 0.15);
     }
