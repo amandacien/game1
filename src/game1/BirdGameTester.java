@@ -24,6 +24,9 @@ public class BirdGameTester {
     static int testPipe = 0;
     static int testBirdScreen = 0;
     static int testMoveDelete = 0;
+    static int testUpLevel = 0;
+    static int testBirdsIn = 0;
+    
     static Random rand = new Random();
     
     public static int randomGen(int start, int end){
@@ -234,8 +237,53 @@ public class BirdGameTester {
         }
         testMoveDelete++;
     }
-           
+       
     
+    //testing whether you can advance the level which also makes it so that 
+    //we know birdsOut is adding correctly 
+    public static void testUpLevel() throws Exception {
+         
+        RunBirdGame preGame = new RunBirdGame(randomGen(1, 100));
+        
+        ArrayList<Bird> flock = preGame.flock;
+        flock.add(new Bird
+            (new Posn(preGame.screenWidth - preGame.pipe.pipeWidth - 1, preGame.screenHeight/2),
+            preGame.screenWidth, preGame.screenHeight, preGame.level));
+        
+        RunBirdGame game = new RunBirdGame(preGame.pipe, flock, preGame.level, preGame.frames,
+            preGame.winNumber, preGame.winNumber - 1, preGame.gameOver);
+        
+        RunBirdGame afterTick = game.onTick();
+        
+        if (afterTick.level != game.level + 1){
+            throw new Exception ("You aren't advancing the level properly");
+        }
+        testUpLevel++;
+    }
+    
+    //testing that birdsIn is adding correctly
+    public static void testBirdsIn() throws Exception {
+
+          RunBirdGame preGame = new RunBirdGame();
+
+          RunBirdGame game = new RunBirdGame(preGame.pipe, preGame.flock, 
+                    preGame.level, preGame.frames, randomGen(0,20), 1, preGame.gameOver);
+
+          RunBirdGame afterTick = game.onTick().onTick().onTick();
+
+          if (game.birdsIn > 9){
+            if (afterTick.birdsIn != game.birdsIn){
+                throw new Exception ("Your birds shouldn't be adding again");
+            }
+          }
+          else {    
+            if (afterTick.birdsIn != game.birdsIn + 1){
+                throw new Exception ("Your birds aren't adding correctly");
+            }
+          }
+          testBirdsIn++;
+      }
+
     
     public static void main(String[] args) throws Exception {
         BirdGameTester tests = new BirdGameTester();
@@ -247,12 +295,16 @@ public class BirdGameTester {
             BirdGameTester.testPipe(" ");
             BirdGameTester.testBirdScreen();
             BirdGameTester.testMoveDelete();
+            BirdGameTester.testUpLevel();
+            BirdGameTester.testBirdsIn();
         }
         
         System.out.println("testStart ran sucessfully " + tests.testStart + (" times"));
         System.out.println("testPipe ran sucessfully " + tests.testPipe + (" times"));
         System.out.println("testBirdScreen ran sucessfully " + tests.testBirdScreen + (" times"));
         System.out.println("testMoveDelete ran sucessfully " + tests.testMoveDelete + (" times"));
+        System.out.println("testUpLevel ran sucessfully " + tests.testUpLevel + (" times"));
+        System.out.println("testBirdsIn ran sucessfully " + tests.testBirdsIn + (" times"));
         
             
         
